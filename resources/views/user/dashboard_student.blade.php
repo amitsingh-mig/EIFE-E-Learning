@@ -74,14 +74,25 @@
 
           <li class="nav-item dropdown ms-lg-2">
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-dark fw-semibold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=600" alt="Student Profile" id="navbarProfileImg" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;">
-              <span class="d-lg-inline d-none" id="navbarProfileName">Amit</span>
+              @if(auth()->check() && auth()->user()->avatar)
+                <img src="{{ auth()->user()->avatar }}" alt="Student Profile" id="navbarProfileImg" class="rounded-circle border" style="width: 32px; height: 32px; object-fit: cover;">
+              @else
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px; font-weight: bold;">
+                  {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'S' }}
+                </div>
+              @endif
+              <span class="d-lg-inline d-none" id="navbarProfileName">{{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'Student' }}</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
               <li><a class="dropdown-item small" href="#" onclick="switchDashboardTab('profile-settings', event)">Profile Settings</a></li>
               <li><a class="dropdown-item small" href="/dashboard_student">My Learning Dashboard</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item small text-danger" href="/login">Sign Out</a></li>
+              <li>
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button type="submit" class="dropdown-item small text-danger"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</button>
+                </form>
+              </li>
             </ul>
           </li>
         </ul>
@@ -96,7 +107,7 @@
         <div class="row align-items-center">
           <div class="col-md-8 text-center text-md-start">
             <span class="badge bg-warning text-dark fw-bold mb-2">Student Dashboard</span>
-            <h1 class="display-6 fw-bold mb-2" style="font-family:'Outfit',sans-serif; color:#fff;">Welcome back, <span id="welcomeStudentName">Amit</span>!</h1>
+            <h1 class="display-6 fw-bold mb-2" style="font-family:'Outfit',sans-serif; color:#fff;">Welcome back, <span id="welcomeStudentName">{{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'Student' }}</span>!</h1>
             <p class="lead mb-0 text-light small-text-opacity" style="font-size: 15px;">You have completed <strong class="text-warning">16%</strong> of your active full-stack path. Keep up the momentum!</p>
           </div>
           <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
@@ -118,9 +129,15 @@
         <div class="db-sidebar">
           <div class="text-center mb-4 pb-3 border-bottom">
             <div class="position-relative d-inline-block">
-              <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" alt="Avatar" id="sidebarProfileImg" class="rounded-circle border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+              @if(auth()->check() && auth()->user()->avatar)
+                <img src="{{ auth()->user()->avatar }}" alt="Avatar" id="sidebarProfileImg" class="rounded-circle border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+              @else
+                <div class="rounded-circle border shadow-sm bg-primary text-white d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px; font-size: 32px; font-weight: bold;">
+                  {{ auth()->check() ? substr(auth()->user()->name, 0, 1) : 'S' }}
+                </div>
+              @endif
             </div>
-            <h5 class="fw-bold text-dark mt-2 mb-0" id="sidebarProfileName">Amit Kumar</h5>
+            <h5 class="fw-bold text-dark mt-2 mb-0" id="sidebarProfileName">{{ auth()->check() ? auth()->user()->name : 'Student Name' }}</h5>
             <span class="text-muted small">Academic Exchange Candidate</span>
           </div>
 
